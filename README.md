@@ -1,5 +1,4 @@
 # TakePhoto
-图片选择器，可以通过相册或者相机选择图片，可以裁剪。
 
 >最近先来无事把以前项目中用到的比较常用的功能抽取出来整理成一个demo，以后用到的时候直接拿来用，也希望能帮到其他人。第一次写东西，整理的可能不太好，还望各位指正。
 
@@ -27,7 +26,6 @@ TakePhoto是用来从相册或相机中获取图片的封装类库。
 
 TakePhoto使用比较简单，只需两步即可。
 
-demo地址：[https://github.com/CoderCF/TakePhoto](https://github.com/CoderCF/TakePhoto)
 
 **第一步：选择相册还是相机获取**
 
