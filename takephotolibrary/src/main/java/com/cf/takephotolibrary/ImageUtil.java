@@ -3,6 +3,8 @@ package com.cf.takephotolibrary;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -20,6 +22,7 @@ import android.provider.MediaStore;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 
 public class ImageUtil {
@@ -36,7 +39,7 @@ public class ImageUtil {
 	 * 创建头像存储目录
 	 * @param dirPath
 	 * @return
-     */
+	 */
 	public static File createDir(String dirPath) {
 		File dir = new File(Environment.getExternalStorageDirectory() + "/" + dirPath + "/");
 		if (!dir.exists()) {
@@ -50,8 +53,8 @@ public class ImageUtil {
 	 * 根据Uri获取图片路径
 	 * @param act
 	 * @param uri
-     * @return
-     */
+	 * @return
+	 */
 	public static String getPathFromUri(Activity act, Uri uri) {
 		try {
 			String[] projection = { MediaStore.Images.Media.DATA };
@@ -75,11 +78,11 @@ public class ImageUtil {
 	 * @param aspectY
 	 * @param outputX
 	 * @param outputY
-     * @param outputFormat
-     */
-	public static void cropPhoto(Activity act,Uri imagUri, Uri outputUri, int aspectX, int aspectY, int outputX, int outputY, String outputFormat) {
+	 * @param outputFormat
+	 */
+	public static void cropPhoto(Activity act, Uri imagUri, Uri outputUri, int aspectX, int aspectY, int outputX, int outputY, String outputFormat) {
 		try {
-			Intent intent = new Intent("com.android.camera.action.CROP", null);
+			Intent intent = new Intent("com.android.camera.action.CROP");
 			intent.setDataAndType(imagUri, "image/*");
 			// crop为true是设置在开启的intent中设置显示的view可以剪裁
 			intent.putExtra("crop", "true");
@@ -94,6 +97,16 @@ public class ImageUtil {
 			intent.putExtra("outputFormat", outputFormat);
 			intent.putExtra("return-data", false);// true:返回uri，false：不返回uri
 			intent.putExtra("noFaceDetection", true);// 取消人脸识别
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+			//授予"相机"保存文件的权限 针对API24+
+			List<ResolveInfo> resInfoList = act.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+			for (ResolveInfo resolveInfo : resInfoList) {
+				String packageName = resolveInfo.activityInfo.packageName;
+				act.grantUriPermission(packageName, outputUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			}
+
 			act.startActivityForResult(intent, TakePhoto.REQUEST_CODE_CROP);
 		} catch (Exception e) {
 			e.printStackTrace();

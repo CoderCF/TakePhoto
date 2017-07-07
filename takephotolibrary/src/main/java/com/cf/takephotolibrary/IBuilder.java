@@ -32,12 +32,12 @@ public abstract class IBuilder<T extends IBuilder> {
     /**裁剪后输出图片的尺寸大小*/
     protected int outputX = 300;
     protected int outputY = 300;
-    /**图片格式*/
+    /**裁剪后输出图片的格式*/
     protected String outputFormat = Bitmap.CompressFormat.JPEG.toString();
     /**裁剪之后的输出路径*/
     protected File outputFile = new File(Environment.getExternalStorageDirectory(), "temp_crop.jpg");
     /**拍照图片的临时路径*/
-    protected File tempFile = new File(Environment.getExternalStorageDirectory(), "temp_photo.jpg");
+    protected File tempFile;
 
     protected Activity mActivity;
     protected Intent mIntent;
@@ -92,7 +92,6 @@ public abstract class IBuilder<T extends IBuilder> {
         return (T) this;
     }
 
-
     /**跳转到拍照还是相册界面，由子类实现*/
     public abstract void start();
 
@@ -110,12 +109,16 @@ public abstract class IBuilder<T extends IBuilder> {
                         if(isCrop){
                             //判断Android版本是否是Android7.0以上
                             Uri outputUri;
+                            Uri temptUri;
                             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
                                 outputUri = FileProvider.getUriForFile(mActivity, ProviderUtil.getFileProviderName(mActivity), outputFile);
+                                temptUri = FileProvider.getUriForFile(mActivity, ProviderUtil.getFileProviderName(mActivity), tempFile);
                             } else {
                                 outputUri = Uri.fromFile(outputFile);
+                                temptUri = Uri.fromFile(tempFile);
                             }
-                            ImageUtil.cropPhoto(mActivity, Uri.fromFile(tempFile), outputUri, aspectX, aspectY, outputX, outputY, outputFormat);
+                            //ImageUtil.cropPhoto(mActivity, Uri.fromFile(tempFile), outputUri, aspectX, aspectY, outputX, outputY, outputFormat);
+                            ImageUtil.cropPhoto(mActivity, temptUri, outputUri, aspectX, aspectY, outputX, outputY, outputFormat);
                         } else {
                             if(listener != null){
                                 listener.onSuccess(tempFile.getAbsolutePath());
@@ -148,7 +151,7 @@ public abstract class IBuilder<T extends IBuilder> {
                             } else {
                                 outputUri = Uri.fromFile(outputFile);
                             }
-                            ImageUtil.cropPhoto(mActivity, data.getData(), outputUri, aspectX, aspectY, outputX, outputY, outputFormat);
+                            ImageUtil.cropPhoto(mActivity, uri, outputUri, aspectX, aspectY, outputX, outputY, outputFormat);
                         } else {
                             if(listener != null){
                                 listener.onSuccess(ImageUtil.getPathFromUri(mActivity, data.getData()));
