@@ -2,13 +2,15 @@ package com.cf.takephoto;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.cf.takephotolibrary.ResultListener;
 import com.cf.takephotolibrary.TakePhoto;
-import com.cf.takephotolibrary.ToastUtil;
+import com.cf.takephotolibrary.listener.ResultListener;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionListener;
 import com.yanzhenjie.permission.Rationale;
@@ -20,13 +22,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PERMISSION_OTHER = 200;
     private static final int REQUEST_CODE_SETTING = 300;
-
+    private ImageView iv_photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        iv_photo = (ImageView) findViewById(R.id.iv_photo);
     }
 
     //----------------------------------权限回调处理----------------------------------//
@@ -45,8 +47,13 @@ public class MainActivity extends AppCompatActivity {
             // 权限申请成功回调。
             switch (requestCode) {
                 case REQUEST_CODE_PERMISSION_OTHER:
-                    TakePhoto.camera(MainActivity.this)
-                            .setCrop(false)
+                    TakePhoto.camera(MainActivity.this)//拍照获取
+                            .setCrop(true)//是否裁剪图片
+                            .setAspectX(1)//裁剪框的比例
+                            .setAspectY(1)
+                            .setOutputX(300)//裁剪后输出图片的尺寸大小
+                            .setOutputY(300)
+                            .setOutputFormat(Bitmap.CompressFormat.JPEG.toString())//裁剪后输出图片的格式
                             .start();
                     break;
             }
@@ -94,9 +101,30 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void onPicture(View view){
-        TakePhoto.album(this)
-                .setCrop(true)
-                .start();
+        TakePhoto.album(this)//从相册获取
+                .setCrop(true)//是否裁剪图片
+                .setAspectX(1)//裁剪框的比例
+                .setAspectY(1)
+                .setOutputX(300)//裁剪后输出图片的尺寸大小
+                .setOutputY(300)
+                .setOutputFormat(Bitmap.CompressFormat.JPEG.toString())//裁剪后输出图片的格式
+                .start();//开始
+    }
+
+    /**
+     * 文件
+     * @param view
+     */
+    public void onFile(View view){
+        TakePhoto.document(this)//从相册获取
+                .setCrop(true)//是否裁剪图片
+                .setAspectX(1)//裁剪框的比例
+                .setAspectY(1)
+                .setOutputX(300)//裁剪后输出图片的尺寸大小
+                .setOutputY(300)
+                .setOutputFormat(Bitmap.CompressFormat.JPEG.toString())//裁剪后输出图片的格式
+                .start();//开始
+
     }
 
     @Override
@@ -104,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
         TakePhoto.onActivityResult(requestCode, resultCode, data, new ResultListener() {
             @Override
             public void onSuccess(String imagPath) {
-                ToastUtil.showShortToast(MainActivity.this, imagPath);
+                //ToastUtil.showShortToast(MainActivity.this, imagPath);
+                iv_photo.setImageBitmap(BitmapFactory.decodeFile(imagPath));
             }
 
             @Override
@@ -117,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
