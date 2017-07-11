@@ -29,7 +29,6 @@ TakePhoto是用来从相册或文件或相机中获取图片的封装类库。
 
 TakePhoto使用比较简单，只需两步即可。
 
-demo地址：[https://github.com/CoderCF/TakePhoto](https://github.com/CoderCF/TakePhoto)
 
 **第一步：选择相册或相机或文件获取**
 
