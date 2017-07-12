@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import com.cf.takephotolibrary.listener.ResultListener;
 import com.cf.takephotolibrary.utils.FileUtil;
 import com.cf.takephotolibrary.utils.ToastUtil;
+import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 import java.util.List;
@@ -172,13 +173,6 @@ public abstract class IBuilder<T extends IBuilder> {
                     Uri uri = data.getData();
                     if(uri != null){
                         String imagePath;
-                        /**
-                         * uri=content://com.android.providers.media.documents/document/image%3A293502  4.4以后
-                         * uri=file:///storage/emulated/0/temp_photo.jpg
-                         * uri=content://media/external/images/media/193968
-                         *
-                         * uri=content://media/external/images/media/13   4.4以前
-                         */
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
                             imagePath = FileUtil.getPathFromUriOnKitKat(mActivity, data.getData());
                         } else {
@@ -209,23 +203,29 @@ public abstract class IBuilder<T extends IBuilder> {
                     }
                 }
                 break;
+            case Crop.REQUEST_CROP://第三方裁剪
             case TakePhoto.REQUEST_CODE_CROP://裁剪
-                if (resultCode == RESULT_OK) {
-                    if(listener != null){
-                        listener.onSuccess(outputFile.getAbsolutePath());
+                try {
+                    if (resultCode == RESULT_OK) {
+                        if(listener != null){
+                            listener.onSuccess(outputFile.getAbsolutePath());
+                        }
+                    } else if (resultCode == RESULT_CANCELED) {
+                        // 用户取消了图像捕获
+                        ToastUtil.showShortToast(mActivity, "您取消了裁剪！");
+                        if(listener != null){
+                            listener.onCancel();
+                        }
+                    } else {
+                        // 图像捕获失败，提示用户
+                        ToastUtil.showShortToast(mActivity, "裁剪失败！");
+                        if(listener != null){
+                            listener.onFailure();
+                        }
                     }
-                } else if (resultCode == RESULT_CANCELED) {
-                    // 用户取消了图像捕获
-                    ToastUtil.showShortToast(mActivity, "您取消了裁剪！");
-                    if(listener != null){
-                        listener.onCancel();
-                    }
-                } else {
-                    // 图像捕获失败，提示用户
+                } catch (Exception e) {
+                    e.printStackTrace();
                     ToastUtil.showShortToast(mActivity, "裁剪失败！");
-                    if(listener != null){
-                        listener.onFailure();
-                    }
                 }
                 //删除拍照的临时文件
                 if(isCamera){
@@ -271,10 +271,16 @@ public abstract class IBuilder<T extends IBuilder> {
                     mActivity.grantUriPermission(packageName, outputUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
             }
-
-            mActivity.startActivityForResult(intent, TakePhoto.REQUEST_CODE_CROP);
+            //检查手机是否带有裁剪功能，如果没有，则使用第三方裁剪工具
+            List list = mActivity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            if(list.isEmpty()){//使用第三方裁剪
+                Crop.of(imageUri, outputUri).withAspect(aspectX, aspectY).withMaxSize(outputX, outputY).start(mActivity);
+            } else {
+                mActivity.startActivityForResult(intent, TakePhoto.REQUEST_CODE_CROP);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            ToastUtil.showShortToast(mActivity, "裁剪功能不可用");
         }
     }
 
