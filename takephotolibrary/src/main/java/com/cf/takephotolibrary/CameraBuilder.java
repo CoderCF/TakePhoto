@@ -8,20 +8,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.cf.takephotolibrary.utils.FileUtil;
-import com.cf.takephotolibrary.utils.ToastUtil;
 
 import java.io.File;
 import java.util.List;
 
-/**
- * 描    述：
- * 创建日期：2017/7/6 13:30
- * 作    者：Chengfu
- * 邮    箱：
- * 备    注：
- */
 public class CameraBuilder extends IBuilder<CameraBuilder> {
 
     public CameraBuilder(Activity activity) {
@@ -55,16 +48,16 @@ public class CameraBuilder extends IBuilder<CameraBuilder> {
                 //检查是否有相机功能
                 List list = mActivity.getPackageManager().queryIntentActivities(mIntent, PackageManager.MATCH_DEFAULT_ONLY);
                 if(list.isEmpty()){
-                    ToastUtil.showShortToast(mActivity, "请检查相机功能是否可用");
+                    Toast.makeText(mActivity, "请检查相机功能是否可用！", Toast.LENGTH_SHORT).show();
                 } else {
                     mActivity.startActivityForResult(mIntent, TakePhoto.REQUEST_CODE_CAMERA);
                 }
             } else{
-                ToastUtil.showShortToast(mActivity, "请检查SD卡是否正常");
+                Toast.makeText(mActivity, "请检查SD卡是否正常！", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShortToast(mActivity, "请检查相机功能是否可用");
+            Toast.makeText(mActivity, "请检查相机功能是否可用！", Toast.LENGTH_SHORT).show();
         }
     }
 

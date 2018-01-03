@@ -5,13 +5,6 @@ import android.content.Intent;
 
 import com.cf.takephotolibrary.listener.ResultListener;
 
-/**
- * 描    述：
- * 创建日期：2017/7/6 13:03
- * 作    者：Chengfu
- * 邮    箱：
- * 备    注：
- */
 public class TakePhoto {
     public static final int REQUEST_CODE_CAMERA = 10001;//拍照
     public static final int REQUEST_CODE_ALBUM = 10002;//相册
@@ -50,6 +43,13 @@ public class TakePhoto {
         return sBuilder;
     }
 
+    /**
+     * 处理拍照或从相册选择的图片或裁剪的结果
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @param listener
+     */
     public static void onActivityResult(int requestCode, int resultCode, Intent data, ResultListener listener) {
         if(sBuilder != null){
             sBuilder.onActivityResult(requestCode, resultCode, data, listener);

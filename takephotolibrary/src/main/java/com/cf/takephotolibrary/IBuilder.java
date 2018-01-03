@@ -9,10 +9,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.cf.takephotolibrary.listener.ResultListener;
 import com.cf.takephotolibrary.utils.FileUtil;
-import com.cf.takephotolibrary.utils.ToastUtil;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
@@ -21,13 +21,6 @@ import java.util.List;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-/**
- * 描    述：
- * 创建日期：2017/7/6 13:14
- * 作    者：Chengfu
- * 邮    箱：
- * 备    注：
- */
 public abstract class IBuilder<T extends IBuilder> {
 
     /**是否裁剪图片*/
@@ -108,6 +101,7 @@ public abstract class IBuilder<T extends IBuilder> {
      * @param requestCode
      * @param resultCode
      * @param data
+     * @param listener
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data, ResultListener listener) {
         switch (requestCode){
@@ -126,13 +120,13 @@ public abstract class IBuilder<T extends IBuilder> {
                     }
                 } else if (resultCode == RESULT_CANCELED) {
                     // 用户取消了图像捕获
-                    ToastUtil.showShortToast(mActivity, "您取消了拍照！");
+                    Toast.makeText(mActivity, "您取消了拍照！", Toast.LENGTH_SHORT).show();
                     if(listener != null){
                         listener.onCancel();
                     }
                 } else {
                     // 图像捕获失败，提示用户
-                    ToastUtil.showShortToast(mActivity, "拍照失败！");
+                    Toast.makeText(mActivity, "拍照失败！", Toast.LENGTH_SHORT).show();
                     if(listener != null){
                         listener.onFailure();
                     }
@@ -142,7 +136,7 @@ public abstract class IBuilder<T extends IBuilder> {
                 if (resultCode == RESULT_OK && data!=null) {
                     Uri uri = data.getData();
                     if(uri != null){
-                        String imagePath = FileUtil.getPathFromUriBeforeKitKat(mActivity, data.getData());
+                        String imagePath = FileUtil.getPathFromUriBeforeKitKat(mActivity, uri);
                         //是否裁剪
                         if(isCrop){
                             Uri imageUri = FileUtil.getUri(mActivity, new File(imagePath));
@@ -157,12 +151,12 @@ public abstract class IBuilder<T extends IBuilder> {
                     }
                 }else if (resultCode == RESULT_CANCELED) {
                     // 用户取消了选择
-                    ToastUtil.showShortToast(mActivity, "您取消了选择图片！");
+                    Toast.makeText(mActivity, "您取消了选择图片！", Toast.LENGTH_SHORT).show();
                     if(listener != null){
                         listener.onCancel();
                     }
                 } else {
-                    ToastUtil.showShortToast(mActivity, "获取图片失败！");
+                    Toast.makeText(mActivity, "获取图片失败！", Toast.LENGTH_SHORT).show();
                     if(listener != null){
                         listener.onFailure();
                     }
@@ -174,9 +168,9 @@ public abstract class IBuilder<T extends IBuilder> {
                     if(uri != null){
                         String imagePath;
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                            imagePath = FileUtil.getPathFromUriOnKitKat(mActivity, data.getData());
+                            imagePath = FileUtil.getPathFromUriOnKitKat(mActivity, uri);
                         } else {
-                            imagePath = FileUtil.getPathFromUriBeforeKitKat(mActivity, data.getData());
+                            imagePath = FileUtil.getPathFromUriBeforeKitKat(mActivity, uri);
                         }
                         //是否裁剪
                         if(isCrop){
@@ -192,12 +186,12 @@ public abstract class IBuilder<T extends IBuilder> {
                     }
                 }else if (resultCode == RESULT_CANCELED) {
                     // 用户取消了选择
-                    ToastUtil.showShortToast(mActivity, "您取消了选择图片！");
+                    Toast.makeText(mActivity, "您取消了选择图片！", Toast.LENGTH_SHORT).show();
                     if(listener != null){
                         listener.onCancel();
                     }
                 } else {
-                    ToastUtil.showShortToast(mActivity, "获取图片失败！");
+                    Toast.makeText(mActivity, "获取图片失败！", Toast.LENGTH_SHORT).show();
                     if(listener != null){
                         listener.onFailure();
                     }
@@ -212,20 +206,20 @@ public abstract class IBuilder<T extends IBuilder> {
                         }
                     } else if (resultCode == RESULT_CANCELED) {
                         // 用户取消了图像捕获
-                        ToastUtil.showShortToast(mActivity, "您取消了裁剪！");
+                        Toast.makeText(mActivity, "您取消了裁剪！", Toast.LENGTH_SHORT).show();
                         if(listener != null){
                             listener.onCancel();
                         }
                     } else {
                         // 图像捕获失败，提示用户
-                        ToastUtil.showShortToast(mActivity, "裁剪失败！");
+                        Toast.makeText(mActivity, "裁剪失败！", Toast.LENGTH_SHORT).show();
                         if(listener != null){
                             listener.onFailure();
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ToastUtil.showShortToast(mActivity, "裁剪失败！");
+                    Toast.makeText(mActivity, "裁剪失败！", Toast.LENGTH_SHORT).show();
                 }
                 //删除拍照的临时文件
                 if(isCamera){
@@ -280,7 +274,7 @@ public abstract class IBuilder<T extends IBuilder> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShortToast(mActivity, "裁剪功能不可用");
+            Toast.makeText(mActivity, "裁剪功能不可用！", Toast.LENGTH_SHORT).show();
         }
     }
 

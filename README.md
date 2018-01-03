@@ -2,11 +2,11 @@
 
 >最近先来无事把以前项目中用到的比较常用的功能抽取出来整理成一个demo，以后用到的时候直接拿来用，也希望能帮到其他人。整理的可能不太好，还望各位指正。
 
-##TakePhoto 介绍
+## TakePhoto 介绍
 
 TakePhoto是用来从相册或文件或相机中获取图片的封装类库。
 
-##TakePhoto 功能
+## TakePhoto 功能
 
  - 支持通过相机拍照获取图片
  - 支持从相册选择图片
@@ -16,16 +16,21 @@ TakePhoto是用来从相册或文件或相机中获取图片的封装类库。
  - 支持Android7.0
  - 不支持Android6.0动态权限（使用前请先进行权限申请）
  
-##演示
+## 演示
 
-![这里写图片描述](http://img.blog.csdn.net/20170711144200514?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvY2hlbmdmdTExNg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
-![这里写图片描述](http://img.blog.csdn.net/20170707133030703?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvY2hlbmdmdTExNg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
-![这里写图片描述](http://img.blog.csdn.net/20170711144351957?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvY2hlbmdmdTExNg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
-![这里写图片描述](http://img.blog.csdn.net/20170711144234292?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvY2hlbmdmdTExNg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
-![这里写图片描述](http://img.blog.csdn.net/20170707133117711?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvY2hlbmdmdTExNg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](/screenshots/1.png)
+![这里写图片描述](/screenshots/2.png)
+![这里写图片描述](/screenshots/3.png)
+![这里写图片描述](/screenshots/4.png)
+![这里写图片描述](/screenshots/5.png)
 
+## 使用说明
 
-##使用说明
+ 添加Gradle依赖
+
+```
+compile 'com.codercf:takephotolibrary:1.0.0'
+```
 
 TakePhoto使用比较简单，只需两步即可。
 
@@ -85,9 +90,7 @@ TakePhoto.document(this)//从文件获取
     }
 ```
 
-##注意：
-
-此库没有对6.0动态权限进行申请，使用前一定要先申请权限，github有很多6.0权限申请的库，这里推荐严大的[AndPermission](https://github.com/yanzhenjie/AndPermission)，使用非常方便。
+<font color=#ff0000 size=3>注: 此库没有对6.0动态权限进行申请，使用前一定要先申请权限</font>
 
 
 该项目参考了：

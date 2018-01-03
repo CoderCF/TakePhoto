@@ -29,6 +29,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         iv_photo = (ImageView) findViewById(R.id.iv_photo);
+		
+		  //申请权限
+        AndPermission.with(this)
+                .requestCode(REQUEST_CODE_PERMISSION_OTHER)
+                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框，避免用户勾选不再提示。
+                .rationale(new RationaleListener() {
+                    @Override
+                    public void showRequestPermissionRationale(int requestCode, Rationale rationale) {
+                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
+                        AndPermission.rationaleDialog(MainActivity.this, rationale).show();
+                    }
+                })
+                .send();
     }
 
     //----------------------------------权限回调处理----------------------------------//
@@ -47,14 +61,7 @@ public class MainActivity extends AppCompatActivity {
             // 权限申请成功回调。
             switch (requestCode) {
                 case REQUEST_CODE_PERMISSION_OTHER:
-                    TakePhoto.camera(MainActivity.this)//拍照获取
-                            .setCrop(true)//是否裁剪图片
-                            .setAspectX(1)//裁剪框的比例
-                            .setAspectY(1)
-                            .setOutputX(300)//裁剪后输出图片的尺寸大小
-                            .setOutputY(300)
-                            .setOutputFormat(Bitmap.CompressFormat.JPEG.toString())//裁剪后输出图片的格式
-                            .start();
+                   
                     break;
             }
 
@@ -79,21 +86,14 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void onCamera(View view){
-        //申请权限
-        AndPermission.with(this)
-                .requestCode(REQUEST_CODE_PERMISSION_OTHER)
-                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框，避免用户勾选不再提示。
-                .rationale(new RationaleListener() {
-                    @Override
-                    public void showRequestPermissionRationale(int requestCode, Rationale rationale) {
-                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
-                        AndPermission.rationaleDialog(MainActivity.this, rationale).show();
-                    }
-                })
-                .send();
-
-
+		TakePhoto.camera(MainActivity.this)//拍照获取
+                            .setCrop(true)//是否裁剪图片
+                            .setAspectX(1)//裁剪框的比例
+                            .setAspectY(1)
+                            .setOutputX(300)//裁剪后输出图片的尺寸大小
+                            .setOutputY(300)
+                            .setOutputFormat(Bitmap.CompressFormat.JPEG.toString())//裁剪后输出图片的格式
+                            .start();
     }
 
     /**
@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         TakePhoto.onActivityResult(requestCode, resultCode, data, new ResultListener() {
             @Override
             public void onSuccess(String imagPath) {
-                //ToastUtil.showShortToast(MainActivity.this, imagPath);
                 iv_photo.setImageBitmap(BitmapFactory.decodeFile(imagPath));
             }
 
