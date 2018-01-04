@@ -29,7 +29,7 @@ TakePhoto是用来从相册或文件或相机中获取图片的封装类库。
  添加Gradle依赖
 
 ```
-compile 'com.codercf:takephotolibrary:1.0.0'
+compile 'com.codercf:takephotolibrary:1.0.1'
 ```
 
 TakePhoto使用比较简单，只需两步即可。
